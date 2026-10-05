@@ -1,0 +1,37 @@
+# One artist per line. Lines starting with # are ignored.
+#
+# Just a name:
+#   Sigur Rós
+#
+# A name plus the artist's Deezer link (use this if the name matches the wrong artist):
+#   坂本龍一 | https://www.deezer.com/artist/12345
+#
+# A name plus several Deezer links (if the artist is split across pages):
+#   Some Artist | https://www.deezer.com/artist/1111 | https://www.deezer.com/artist/2222
+#
+# Optional: add a MusicBrainz link too, so the backup also matches the right artist:
+#   坂本龍一 | https://www.deezer.com/artist/12345 | https://musicbrainz.org/artist/...
+#
+# Replace the example below with your own artists.
+AFI | https://www.deezer.com/us/artist/2130 | https://musicbrainz.org/artist/1c3919b2-43ca-4a4a-935d-9d50135ec0ef
+Boy Throb | https://www.deezer.com/us/artist/360070412 | https://musicbrainz.org/artist/f7376ee1-4c08-4a45-8ca7-1871b5de5cf6
+Darren Hayes | https://www.deezer.com/us/artist/519 | https://musicbrainz.org/artist/ec21de7d-2288-4640-a015-edecf6ac147f
+Dreamcatcher | https://www.deezer.com/us/artist/15219 | https://musicbrainz.org/artist/a97f393a-13a7-4645-8bba-f10bd22d7228
+Infinite | https://www.deezer.com/us/artist/1000622 | https://musicbrainz.org/artist/c175f8b3-47f8-46d4-a4cf-cb92fe7a37ae
+JUSTB | https://www.deezer.com/us/artist/58506472 | https://musicbrainz.org/artist/f6308fc8-ca1d-4f81-9f08-6c4bf4b6db00
+Kill Hannah | https://www.deezer.com/us/artist/952 | https://musicbrainz.org/artist/de030dcd-36e3-425e-9201-0d5be10769f1
+Kim Dong Jun | https://www.deezer.com/us/artist/77876782
+Oh My Girl | https://www.deezer.com/us/artist/58272932 | https://musicbrainz.org/artist/58dccd50-1dcf-4674-8ba6-31058695d24d
+ONF | https://www.deezer.com/us/artist/14754433 | https://musicbrainz.org/artist/407edcfa-cc74-40ca-bece-8e98f8fb0deb
+Patrick Wolf | https://www.deezer.com/us/artist/1947 | https://musicbrainz.org/artist/4ac4e32b-bd18-402e-adad-ae00e72f8d85
+Placebo | https://www.deezer.com/us/artist/8 | https://musicbrainz.org/artist/847e8284-8582-4b0e-9c26-b042a4f49e57
+Road-B | https://www.deezer.com/us/artist/168041677
+Rufus Wainwright | https://www.deezer.com/us/artist/1515 | https://musicbrainz.org/artist/78e46ae5-9bfd-433b-be3f-19e993d67ecc
+Savage Garden | https://www.deezer.com/us/artist/398 | https://musicbrainz.org/artist/a871fd87-50f7-4032-b06d-da56779edcce
+Tegan and Sara | https://www.deezer.com/us/artist/1695 | https://musicbrainz.org/artist/d13f0f47-36f9-4661-87fe-2de56f45c649
+The Format | https://www.deezer.com/us/artist/5323 | https://musicbrainz.org/artist/81b07a2a-cdf0-4c5e-a68c-8d910e1f0ea6
+The Mars Volta | https://www.deezer.com/us/artist/1211 | https://musicbrainz.org/artist/20883363-1ea4-4d72-ad72-c0e767038f3e
+The Postal Service | https://www.deezer.com/us/artist/1272 | https://musicbrainz.org/artist/299278d3-25dd-4f30-bae4-5b571c28034d
+VIXX | https://www.deezer.com/us/artist/5503925 | https://musicbrainz.org/artist/270bebcb-f400-4912-a8ed-1827ae562405
+Yim Siwan | https://www.deezer.com/us/artist/85160482 | https://musicbrainz.org/artist/1fd4b66c-b7ca-4bf4-b9fc-8e6e6cde4274
+ZE:A | https://www.deezer.com/us/artist/1479809 | https://musicbrainz.org/artist/156632ba-7d6e-4b38-b879-808d0c754cb4
