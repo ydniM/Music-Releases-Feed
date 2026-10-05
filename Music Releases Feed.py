@@ -11,7 +11,9 @@ Each line of Artists.txt is a name, optionally followed by links, separated by |
     Artist Name | https://www.deezer.com/artist/12345
     Artist Name | https://www.deezer.com/artist/12345 | https://www.deezer.com/artist/67890
     Artist Name | https://www.deezer.com/artist/12345 | https://musicbrainz.org/artist/<id>
-Deezer links are used with Deezer; MusicBrainz links are used with the backup.
+Deezer links are used with Deezer. A line with a MusicBrainz link is ALSO checked on
+MusicBrainz every day (for releases Deezer is missing), and MusicBrainz links are used
+by the backup if Deezer stops working.
 Lines starting with # are ignored.
 
 Output:
@@ -276,8 +278,28 @@ class MusicBrainzSource:
 
 # ---- Building the feed ----------------------------------------------------
 
-def build(source, lines, cutoff, today):
-    """Check every artist with one source. Returns (items, report, lines checked, lines failed)."""
+def collect(source, line, notes, matched, cutoff, today, seen, line_keys, skip_titles=()):
+    """Gather in-range releases for one line from one source."""
+    found = []
+    for artist_id, artist_name, artist_link in source.lookup(line, notes):
+        matched.append(f"[{md(artist_name)}]({artist_link})")
+        for rel in source.releases(artist_id):
+            if rel["date"] is None or not (cutoff <= rel["date"] <= today):
+                continue
+            key = (norm(rel["title"]), norm(rel["type"]), rel["date"])
+            if rel["source_id"] in seen or key in line_keys or norm(rel["title"]) in skip_titles:
+                continue
+            seen.add(rel["source_id"])
+            line_keys.add(key)
+            rel["artist"] = line["name"] or artist_name
+            found.append(rel)
+    return found
+
+
+def build(source, lines, cutoff, today, extra=None):
+    """Check every artist with the main source. If `extra` is given, lines that have
+    a MusicBrainz link are also checked there, and releases Deezer didn't have are added.
+    Returns (items, report, lines checked, lines failed)."""
     items, report, seen = [], [], set()
     checked = failed = 0
     for raw in lines:
@@ -290,22 +312,19 @@ def build(source, lines, cutoff, today):
         for bad in line["unreadable"]:
             notes.append(f"⚠️ Couldn't read `{md(bad)}` as a Deezer or MusicBrainz artist link. "
                          "Use the link from your browser's address bar on the artist's page.")
+        main_items = []
         try:
-            for artist_id, artist_name, artist_link in source.lookup(line, notes):
-                matched.append(f"[{md(artist_name)}]({artist_link})")
-                for rel in source.releases(artist_id):
-                    if rel["date"] is None or not (cutoff <= rel["date"] <= today):
-                        continue
-                    key = (norm(rel["title"]), norm(rel["type"]), rel["date"])
-                    if rel["source_id"] in seen or key in line_keys:
-                        continue
-                    seen.add(rel["source_id"])
-                    line_keys.add(key)
-                    rel["artist"] = line["name"] or artist_name
-                    items.append(rel)
+            main_items = collect(source, line, notes, matched, cutoff, today, seen, line_keys)
         except Exception as e:
             failed += 1
             notes.append(f"❌ Error while checking this artist: {md(e)}")
+        items += main_items
+        if extra and line["mb"]:
+            try:
+                titles = {norm(r["title"]) for r in main_items}
+                items += collect(extra, line, notes, matched, cutoff, today, seen, line_keys, titles)
+            except Exception as e:
+                notes.append(f"⚠️ The extra MusicBrainz check failed this time: {md(e)}")
         report.append((text, ", ".join(matched) or "—", " ".join(notes) or "✅"))
     return items, report, checked, failed
 
@@ -323,7 +342,7 @@ def main():
     source, backup_reason = DeezerSource(), None
     try:
         source.check()
-        items, report, checked, failed = build(source, lines, cutoff, today)
+        items, report, checked, failed = build(source, lines, cutoff, today, extra=MusicBrainzSource())
         if checked and failed == checked:
             raise RuntimeError("every artist failed on Deezer")
     except Exception as e:
@@ -335,8 +354,9 @@ def main():
             print_report(report, 0, source, backup_reason)
             sys.exit("Deezer and the MusicBrainz backup both failed. The previous feed was left unchanged.")
 
+    mb = MusicBrainzSource()
     for rel in items:
-        rel["cover"] = source.cover(rel)
+        rel["cover"] = mb.cover(rel) if rel["source_id"].startswith("mb-") else rel.get("cover")
     items.sort(key=lambda x: (x["date"], x["artist"].casefold()), reverse=True)
 
     os.makedirs(OUT_DIR, exist_ok=True)
@@ -422,7 +442,7 @@ def print_report(report, item_count, source, backup_reason):
     text = ["## Release feed report\n"]
     if backup_reason:
         text.append(f"⚠️ **Deezer wasn't working ({md(backup_reason)}), so this run used the MusicBrainz backup.**\n")
-    text += [f"Source: **{source.label}**. **{item_count}** releases in the feed (last {DAYS_BACK} days).\n",
+    text += [f"Source: **{source.label}**{'' if backup_reason else ' (plus MusicBrainz for lines with a MusicBrainz link)'}. **{item_count}** releases in the feed (last {DAYS_BACK} days).\n",
              f"| Line in {ARTISTS_FILE} | Matched artist(s) | Notes |",
              "|---|---|---|"]
     text += [f"| {md(line)} | {m} | {n} |" for line, m, n in report]
