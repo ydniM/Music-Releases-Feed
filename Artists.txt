@@ -1,18 +1,3 @@
-# One artist per line. Lines starting with # are ignored.
-#
-# Just a name:
-#   Sigur Rós
-#
-# A name plus the artist's Deezer link (use this if the name matches the wrong artist):
-#   坂本龍一 | https://www.deezer.com/artist/12345
-#
-# A name plus several Deezer links (if the artist is split across pages):
-#   Some Artist | https://www.deezer.com/artist/1111 | https://www.deezer.com/artist/2222
-#
-# Optional: add a MusicBrainz link too, so the backup also matches the right artist:
-#   坂本龍一 | https://www.deezer.com/artist/12345 | https://musicbrainz.org/artist/...
-#
-# Replace the example below with your own artists.
 AFI | https://www.deezer.com/us/artist/2130 | https://musicbrainz.org/artist/1c3919b2-43ca-4a4a-935d-9d50135ec0ef
 Boy Throb | https://www.deezer.com/us/artist/360070412 | https://musicbrainz.org/artist/f7376ee1-4c08-4a45-8ca7-1871b5de5cf6
 Darren Hayes | https://www.deezer.com/us/artist/519 | https://musicbrainz.org/artist/ec21de7d-2288-4640-a015-edecf6ac147f
