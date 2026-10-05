@@ -1,0 +1,43 @@
+name: Update Feed
+
+on:
+  schedule:
+    - cron: "17 11 * * *"   # every day at 11:17 UTC (7:17 AM Florida time in summer, 6:17 AM in winter)
+  workflow_dispatch:         # adds a "Run workflow" button so you can run it any time
+  push:
+    branches: [main]
+    paths:                   # also runs right after you edit any of these files
+      - "Artists.txt"
+      - "Music Releases Feed.py"
+      - ".github/workflows/Update Feed.yml"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build the feed
+        run: python3 "Music Releases Feed.py"
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
